@@ -3,59 +3,69 @@ package com.parkit.parkingsystem.model;
 import java.time.LocalDateTime;
 
 public class Ticket {
-    private int id;
-    private ParkingSpot parkingSpot;
-    private String vehicleRegNumber;
-    private double price;
-    // TM 25/10/22 Use of LocalDateTime instead of Date
-    private LocalDateTime inTime;
-    private LocalDateTime outTime;
+	private int id;
+	private ParkingSpot parkingSpot;
+	private String vehicleRegNumber;
+	private double price;
+	// TM 25/10/22 Use of LocalDateTime instead of Date
+	private LocalDateTime inTime;
+	private LocalDateTime outTime;
+	// TM 27/10/22
+	private boolean oldClient;
 
-    public int getId() {
-        return id;
-    }
+	public boolean isOldClient() {
+		return oldClient;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setOldClient(boolean oldClient) {
+		this.oldClient = oldClient;
+	}
 
-    public ParkingSpot getParkingSpot() {
-        return parkingSpot;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setParkingSpot(ParkingSpot parkingSpot) {
-        this.parkingSpot = parkingSpot;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public String getVehicleRegNumber() {
-        return vehicleRegNumber;
-    }
+	public ParkingSpot getParkingSpot() {
+		return parkingSpot;
+	}
 
-    public void setVehicleRegNumber(String vehicleRegNumber) {
-        this.vehicleRegNumber = vehicleRegNumber;
-    }
+	public void setParkingSpot(ParkingSpot parkingSpot) {
+		this.parkingSpot = parkingSpot;
+	}
 
-    public double getPrice() {
-        return price;
-    }
+	public String getVehicleRegNumber() {
+		return vehicleRegNumber;
+	}
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+	public void setVehicleRegNumber(String vehicleRegNumber) {
+		this.vehicleRegNumber = vehicleRegNumber;
+	}
 
-    public LocalDateTime getInTime() {
-        return inTime;
-    }
+	public double getPrice() {
+		return price;
+	}
 
-    public void setInTime(LocalDateTime inTime) {
-        this.inTime = inTime;
-    }
+	public void setPrice(double price) {
+		this.price = price;
+	}
 
-    public LocalDateTime getOutTime() {
-        return outTime;
-    }
+	public LocalDateTime getInTime() {
+		return inTime;
+	}
 
-    public void setOutTime(LocalDateTime outTime) {
-        this.outTime = outTime;
-    }
+	public void setInTime(LocalDateTime inTime) {
+		this.inTime = inTime;
+	}
+
+	public LocalDateTime getOutTime() {
+		return outTime;
+	}
+
+	public void setOutTime(LocalDateTime outTime) {
+		this.outTime = outTime;
+	}
 }
