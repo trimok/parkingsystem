@@ -6,16 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.sql.Connection;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -37,7 +40,7 @@ public class ParkingDataBaseIT {
 	private static InputReaderUtil inputReaderUtil;
 
 	@BeforeAll
-	private static void setUp() throws Exception {
+	public static void setUp() throws Exception {
 		parkingSpotDAO = new ParkingSpotDAO();
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		ticketDAO = new TicketDAO();
@@ -46,7 +49,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@BeforeEach
-	private void setUpPerTest() throws Exception {
+	public void setUpPerTest() throws Exception {
 		// TM 26/10/22 1 = type CAR, 2 = type BIKE
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -54,7 +57,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@AfterAll
-	private static void tearDown() {
+	public static void tearDown() {
 
 	}
 
@@ -64,6 +67,7 @@ public class ParkingDataBaseIT {
 	 * @throws Exception
 	 */
 	@Test
+	@DisplayName("Integration test for the vehicle incoming/parking process")
 	public void testParkingACar() throws Exception {
 		// GIVEN
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -95,6 +99,7 @@ public class ParkingDataBaseIT {
 	 * @throws Exception
 	 */
 	@Test
+	@DisplayName("Integration test for the vehicle incoming/parking +  exitinf process")
 	public void testParkingLotExit() throws Exception {
 		// GIVEN
 		// Simulation of parking a car
@@ -121,5 +126,9 @@ public class ParkingDataBaseIT {
 		ParkingSpot parkingSpot = ticket.getParkingSpot();
 		assertNotNull(parkingSpot);
 		assertEquals(parkingSpot.isAvailable(), true);
+
+		Connection connection = new DataBaseConfig().getConnection();
+
+		assertNotNull(connection);
 	}
 }

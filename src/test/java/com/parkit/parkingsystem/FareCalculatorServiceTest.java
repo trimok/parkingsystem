@@ -1,14 +1,17 @@
 package com.parkit.parkingsystem;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -22,12 +25,12 @@ public class FareCalculatorServiceTest {
 	private Ticket ticket;
 
 	@BeforeAll
-	private static void setUp() {
+	public static void setUp() {
 		fareCalculatorService = new FareCalculatorService();
 	}
 
 	@BeforeEach
-	private void setUpPerTest() {
+	public void setUpPerTest() {
 		ticket = new Ticket();
 	}
 
@@ -38,7 +41,7 @@ public class FareCalculatorServiceTest {
 	 * @param parkingType
 	 */
 	// TM 25/10/22 Refactoring : Utilitary method to simplify the code
-	private void calculateTicketFromParkingDurationAndType(Integer parkingDurationInMinutes, ParkingType parkingType) {
+	public void calculateTicketFromParkingDurationAndType(Long parkingDurationInMinutes, ParkingType parkingType) {
 		ParkingSpot parkingSpot = new ParkingSpot(1, parkingType, false);
 
 		LocalDateTime outTime = LocalDateTime.now();
@@ -51,94 +54,82 @@ public class FareCalculatorServiceTest {
 		fareCalculatorService.calculateFare(ticket);
 	}
 
-	@Test
-	public void calculateFareCar() {
-		// GIVEN
-		int parkingDurationInMinutes = 60;
-		ParkingType parkingType = ParkingType.CAR;
-
+	/**
+	 * Generic Method to calculate correct prices for different vehicle types and parking durations
+	 * 
+	 * see fareParametersProvider
+	 * 
+	 * @param parkingType
+	 * @param rate_per_hour
+	 * @param parkingDurationInMinutes
+	 * @param expectedFare
+	 */
+	@ParameterizedTest(name = "The fare for a {0} and a parking duration of {2} minutes should be equals to {3}")
+	@MethodSource("fareParametersProvider")
+	public void calculateFare(ParkingType parkingType, double rate_per_hour, long parkingDurationInMinutes,
+			double expectedFare) {
 		// WHEN
 		calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
 
 		// THEN
-		assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR);
+		assertThat(ticket.getPrice()).isEqualTo(expectedFare);
 	}
 
-	@Test
-	public void calculateFareBike() {
+	/**
+	 * Arguments Provider for the method calculateFare
+	 * 
+	 * @return
+	 */
+	public static Stream<Arguments> fareParametersProvider() {
 		// GIVEN
-		int parkingDurationInMinutes = 60;
-		ParkingType parkingType = ParkingType.BIKE;
+		return Stream.of(
+				// VEHICLE TYPE, RATE_PER_HOUR, PARKING DURATION IN MINUTES, EXPECTED FARE
+				Arguments.arguments(ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 60, (60 / 60.0) * Fare.CAR_RATE_PER_HOUR),
+				Arguments.arguments(ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 45, (45 / 60.0) * Fare.CAR_RATE_PER_HOUR),
+				Arguments.arguments(ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 24 * 60,
+						(24 * 60 / 60.0) * Fare.CAR_RATE_PER_HOUR),
+				Arguments.arguments(ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 60,
+						(60 / 60.0) * Fare.BIKE_RATE_PER_HOUR),
+				Arguments.arguments(ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 45,
+						(45 / 60.0) * Fare.BIKE_RATE_PER_HOUR),
+				Arguments.arguments(ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 24 * 60,
+						(24 * 60 / 60.0) * Fare.BIKE_RATE_PER_HOUR)
 
-		// WHEN
-		calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
-
-		// THEN
-		assertEquals(ticket.getPrice(), Fare.BIKE_RATE_PER_HOUR);
+		);
 	}
 
-	@Test
-	public void calculateFareUnkownType() {
-		// GIVEN
-		int parkingDurationInMinutes = 60;
-		ParkingType parkingType = null;
-
+	/**
+	 * Generic Method to check exception throws for unknown vehicle type or negative parking duration
+	 * 
+	 * see fareExceptionParametersProvider
+	 * 
+	 * @param parkingType
+	 * @param rate_per_hour
+	 * @param parkingDurationInMinutes
+	 * @param expectedFare
+	 */
+	@ParameterizedTest(name = "An exception ot type {2} should be thrown for vehicle Type = {0} and parking duration of {1} ")
+	@MethodSource("fareExceptionParametersProvider")
+	public void calculateFareException(ParkingType parkingType, long parkingDurationInMinutes,
+			Class<Exception> exceptionClass) {
 		// WHEN
 		Executable action = () -> calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
 
 		// THEN
-		assertThrows(NullPointerException.class, action);
+		assertThrows(exceptionClass, action);
 	}
 
-	@Test
-	public void calculateFareBikeWithFutureInTime() {
+	/**
+	 * Arguments Provider for the method calculateFareException
+	 * 
+	 * @return
+	 */
+	public static Stream<Arguments> fareExceptionParametersProvider() {
 		// GIVEN
-		int parkingDurationInMinutes = -60;
-		ParkingType parkingType = ParkingType.BIKE;
-
-		// WHEN
-		Executable action = () -> calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
-
-		// THEN
-		assertThrows(IllegalArgumentException.class, action);
-	}
-
-	@Test
-	public void calculateFareBikeWithLessThanOneHourParkingTime() {
-		// GIVEN
-		int parkingDurationInMinutes = 45;
-		ParkingType parkingType = ParkingType.BIKE;
-
-		// WHEN
-		calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
-
-		// THEN
-		assertEquals(((parkingDurationInMinutes / 60.0) * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
-	}
-
-	@Test
-	public void calculateFareCarWithLessThanOneHourParkingTime() {
-		// GIVEN
-		int parkingDurationInMinutes = 45;
-		ParkingType parkingType = ParkingType.CAR;
-
-		// WHEN
-		calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
-
-		// THEN
-		assertEquals(((parkingDurationInMinutes / 60.0) * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
-	}
-
-	@Test
-	public void calculateFareCarWithMoreThanADayParkingTime() {
-		// GIVEN
-		int parkingDurationInMinutes = 24 * 60;
-		ParkingType parkingType = ParkingType.CAR;
-
-		// WHEN
-		calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType);
-
-		// THEN
-		assertEquals(((parkingDurationInMinutes / 60.0) * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+		return Stream.of(
+				// VEHICLE TYPE, PARKING DURATION IN MINUTES, EXCEPTION CLASS
+				Arguments.arguments(null, 60, NullPointerException.class),
+				Arguments.arguments(ParkingType.CAR, -60, IllegalArgumentException.class),
+				Arguments.arguments(ParkingType.BIKE, -60, IllegalArgumentException.class));
 	}
 }
