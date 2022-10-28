@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,8 +99,6 @@ public class ParkingDataBaseIT {
 		// GIVEN
 		// Simulation of parking a car
 		testParkingACar();
-		// Waiting for 2 seconds for the parking
-		TimeUnit.SECONDS.sleep(2);
 
 		// WHEN
 		// Simulation of the exiting of the car
