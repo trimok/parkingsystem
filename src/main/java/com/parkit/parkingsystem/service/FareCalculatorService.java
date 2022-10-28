@@ -1,14 +1,16 @@
 package com.parkit.parkingsystem.service;
 
+import static com.parkit.parkingsystem.constants.MathUtil.SIXTY;
+import static com.parkit.parkingsystem.constants.MathUtil.THOUSAND;
+
 import java.time.temporal.ChronoUnit;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.constants.MathUtil;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
-
-	private static final double SIXTY = 60.0;
 
 	public void calculateFare(Ticket ticket) {
 		// TM 26/10/22 add a second to outTime, in case inTime = outTime in tests
@@ -17,7 +19,8 @@ public class FareCalculatorService {
 		}
 
 		// TM 25/10/22 Difference in Hours using LocalDateTime
-		double differenceInHours = ChronoUnit.MINUTES.between(ticket.getInTime(), ticket.getOutTime()) / SIXTY;
+		double differenceInHours = ChronoUnit.MILLIS.between(ticket.getInTime(), ticket.getOutTime())
+				/ (THOUSAND * SIXTY * SIXTY);
 
 		// TM 27/10/22 reduction
 		double factorRate = ticket.isOldClient() ? Fare.OLD_CLIENT_RATE_FACTOR : 1.0;
@@ -38,8 +41,8 @@ public class FareCalculatorService {
 				throw new IllegalArgumentException("Unkown Parking Type");
 		}
 
-		// Price calculus
-		double price = differenceInHours * rate_per_hour * factorRate;
+		// Price calculus and round
+		double price = MathUtil.round(differenceInHours * rate_per_hour * factorRate);
 		ticket.setPrice(price);
 	}
 }

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterAll;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -99,7 +97,7 @@ public class ParkingDataBaseIT {
 	 * @throws Exception
 	 */
 	@Test
-	@DisplayName("Integration test for the vehicle incoming/parking +  exitinf process")
+	@DisplayName("Integration test for the vehicle incoming/parking +  exiting process")
 	public void testParkingLotExit() throws Exception {
 		// GIVEN
 		// Simulation of parking a car
@@ -126,9 +124,5 @@ public class ParkingDataBaseIT {
 		ParkingSpot parkingSpot = ticket.getParkingSpot();
 		assertNotNull(parkingSpot);
 		assertEquals(parkingSpot.isAvailable(), true);
-
-		Connection connection = new DataBaseConfig().getConnection();
-
-		assertNotNull(connection);
 	}
 }

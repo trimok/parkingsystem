@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem;
 
+import static com.parkit.parkingsystem.constants.MathUtil.PRECISION;
+import static com.parkit.parkingsystem.constants.MathUtil.SIXTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -16,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.parkit.parkingsystem.constants.ClientType;
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.constants.MathUtil;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
@@ -25,9 +28,6 @@ public class FareCalculatorServiceTest {
 
 	private static FareCalculatorService fareCalculatorService;
 	private Ticket ticket;
-
-	private static final double PRECISION = 1E-15;
-	private static final double SIXTY = 60.0;
 
 	@BeforeAll
 	public static void setUp() {
@@ -95,31 +95,31 @@ public class FareCalculatorServiceTest {
 
 				// NEW CLIENT
 				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 60,
-						(60 / SIXTY) * Fare.CAR_RATE_PER_HOUR),
+						MathUtil.round((60 / SIXTY) * Fare.CAR_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 45,
-						(45 / SIXTY) * Fare.CAR_RATE_PER_HOUR),
+						MathUtil.round((45 / SIXTY) * Fare.CAR_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 24 * 60,
-						(24 * 60 / SIXTY) * Fare.CAR_RATE_PER_HOUR),
+						MathUtil.round((24 * 60 / SIXTY) * Fare.CAR_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 60,
-						(60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR),
+						MathUtil.round((60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 45,
-						(45 / SIXTY) * Fare.BIKE_RATE_PER_HOUR),
+						MathUtil.round((45 / SIXTY) * Fare.BIKE_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 24 * 60,
-						(24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR),
+						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR)),
 
 				// OLD CLIENT
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 60,
-						(60.0 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR),
+						MathUtil.round((60.0 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 45,
-						(45 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR),
+						MathUtil.round((45 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 24 * 60,
-						(24 * 60 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR),
+						MathUtil.round((24 * 60 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 60,
-						(60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR),
+						MathUtil.round((60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 45,
-						(45 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR),
+						MathUtil.round((45 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 24 * 60,
-						(24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR));
+						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)));
 
 	}
 
