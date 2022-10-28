@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -71,6 +72,7 @@ public class FareCalculatorServiceTest {
 	 * @param parkingDurationInMinutes
 	 * @param expectedFare
 	 */
+	@DisplayName("Fare calculus test : ")
 	@ParameterizedTest(name = "Fare for client {0}, Type vehicle {1}, parking duration of {3} minutes should be equals to {4}")
 	@MethodSource("fareParametersProvider")
 	public void calculateFare(ClientType clientType, ParkingType parkingType, double rate_per_hour,
@@ -133,6 +135,7 @@ public class FareCalculatorServiceTest {
 	 * @param parkingDurationInMinutes
 	 * @param expectedFare
 	 */
+	@DisplayName("Fare calculus exception test : ")
 	@ParameterizedTest(name = "An exception ot type {2} should be thrown for vehicle Type = {0} and parking duration of {1} ")
 	@MethodSource("fareExceptionParametersProvider")
 	public void calculateFareException(ParkingType parkingType, long parkingDurationInMinutes,

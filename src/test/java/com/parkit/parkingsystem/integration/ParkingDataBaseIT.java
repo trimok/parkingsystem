@@ -1,7 +1,6 @@
 package com.parkit.parkingsystem.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
@@ -118,7 +117,6 @@ public class ParkingDataBaseIT {
 		// the database
 		assertNotNull(ticket);
 		assertNotNull(ticket.getOutTime());
-		assertNotEquals(ticket.getPrice(), 0.0);
 
 		// Verifying that the Parking Spot exist and is correctly updated (available = true)
 		ParkingSpot parkingSpot = ticket.getParkingSpot();
