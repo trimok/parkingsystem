@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.service;
 
+import static com.parkit.parkingsystem.constants.MathUtil.HALF_HOUR;
 import static com.parkit.parkingsystem.constants.MathUtil.SIXTY;
 import static com.parkit.parkingsystem.constants.MathUtil.THOUSAND;
 
@@ -42,7 +43,11 @@ public class FareCalculatorService {
 		}
 
 		// Price calculus and round
-		double price = MathUtil.round(differenceInHours * rate_per_hour * factorRate);
+		// TM 28/10/22 => If parking time is less than 30 minutes, then the fare is 0
+		double price = 0.0;
+		if (differenceInHours >= HALF_HOUR) {
+			price = MathUtil.round(differenceInHours * rate_per_hour * factorRate);
+		}
 		ticket.setPrice(price);
 	}
 }

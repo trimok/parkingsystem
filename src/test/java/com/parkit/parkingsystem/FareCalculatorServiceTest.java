@@ -109,7 +109,7 @@ public class FareCalculatorServiceTest {
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 24 * 60,
 						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR)),
 
-				// OLD CLIENT
+				// OLD CLIENT (5 % reduction)
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 60,
 						MathUtil.round((60.0 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 45,
@@ -121,8 +121,10 @@ public class FareCalculatorServiceTest {
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 45,
 						MathUtil.round((45 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 24 * 60,
-						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)));
+						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 
+				// LESS THAN 30 minutes = 0 fare
+				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 29, 0.0));
 	}
 
 	/**
