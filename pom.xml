@@ -186,11 +186,22 @@
 				<version>${jacoco-maven-plugin-version}</version>
 				<executions>
 					<execution>
+						<configuration>
+							<excludes>
+								<exclude>com/parkit/parkingsystem/model.*</exclude>
+								<exclude>com/parkit/parkingsystem/config.*</exclude>
+								<exclude>com/parkit/parkingsystem/util.*</exclude>
+								<exclude>com/parkit/parkingsystem/constants.*</exclude>
+								<exclude>com/parkit/parkingsystem/App.class</exclude>
+							</excludes>
+						</configuration>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 					<execution>
+						<configuration>
+						</configuration>
 						<id>report</id>
 						<phase>test</phase>
 						<goals>
@@ -209,7 +220,6 @@
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<version>${spotbugs-maven-plugin-version}</version>
 			</plugin>
-		</plugins>
+		</plugins>		
 	</build>
-
 </project>
