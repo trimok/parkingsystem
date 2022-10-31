@@ -12,11 +12,30 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 
+/**
+ * DAO for the ParkingSpot Object
+ * 
+ * @author trimok
+ *
+ */
 public class ParkingSpotDAO {
+	/**
+	 * The logger
+	 */
 	private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
+	/**
+	 * The database
+	 */
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * Getting the next available spot
+	 * 
+	 * @param parkingType
+	 *            : the parking type
+	 * @return the parking number
+	 */
 	public int getNextAvailableSlot(ParkingType parkingType) {
 		Connection con = null;
 		int result = -1;
@@ -38,6 +57,13 @@ public class ParkingSpotDAO {
 		return result;
 	}
 
+	/**
+	 * Updating a ParkingSpot object
+	 * 
+	 * @param parkingSpot
+	 *            : the parking spot
+	 * @return true if update is success
+	 */
 	public boolean updateParking(ParkingSpot parkingSpot) {
 		// update the availability fo that parking slot
 		Connection con = null;
@@ -61,7 +87,8 @@ public class ParkingSpotDAO {
 	 * Method to get a ParkingSpot (from the database) from a parkingNumber
 	 * 
 	 * @param parkingNumber
-	 * @return
+	 *            : the parking number
+	 * @return a ParkingSpot
 	 */
 	// TM 26/10/22
 	public ParkingSpot getParkingSpot(int parkingNumber) {
@@ -86,5 +113,4 @@ public class ParkingSpotDAO {
 		}
 		return parkingSpot;
 	}
-
 }

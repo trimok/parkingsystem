@@ -13,12 +13,31 @@ import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * A DAO for the Ticket object
+ * 
+ * @author trimok
+ *
+ */
 public class TicketDAO {
 
+	/**
+	 * The logger
+	 */
 	private static final Logger logger = LogManager.getLogger("TicketDAO");
 
+	/**
+	 * The Database
+	 */
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * Saving a ticket object in the database
+	 * 
+	 * @param ticket
+	 *            : the ticket
+	 * @return : a boolean indicating that the saving operation is a success
+	 */
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		try {
@@ -41,6 +60,13 @@ public class TicketDAO {
 		return false;
 	}
 
+	/**
+	 * Getting the last object saved in the database from a vehicle number
+	 * 
+	 * @param vehicleRegNumber
+	 *            : the vehicle number
+	 * @return : the last ticket in the database with the corresponding vehicle number
+	 */
 	public Ticket getLastTicket(String vehicleRegNumber) {
 		Connection con = null;
 		Ticket ticket = null;
@@ -81,6 +107,13 @@ public class TicketDAO {
 		return null;
 	}
 
+	/**
+	 * Updating a ticket
+	 * 
+	 * @param ticket
+	 *            : the ticket to update
+	 * @return : a boolean indicating that the update operation is a success
+	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
 		try {

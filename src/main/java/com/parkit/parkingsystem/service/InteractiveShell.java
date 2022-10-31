@@ -7,10 +7,22 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * The interactive shell (console mode) for the application
+ * 
+ * @author trimok
+ *
+ */
 public class InteractiveShell {
 
+	/**
+	 * The logger
+	 */
 	private static final Logger logger = LogManager.getLogger("InteractiveShell");
 
+	/**
+	 * Launching the console mode
+	 */
 	public static void loadInterface() {
 		logger.info("App initialized!!!");
 		System.out.println("Welcome to Parking System!");
@@ -19,7 +31,6 @@ public class InteractiveShell {
 		InputReaderUtil inputReaderUtil = new InputReaderUtil();
 		ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
 		TicketDAO ticketDAO = new TicketDAO();
-		FareCalculatorService fareCalculatorService = new FareCalculatorService();
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
 		while (continueApp) {
@@ -45,6 +56,9 @@ public class InteractiveShell {
 		}
 	}
 
+	/**
+	 * Loading the main menu
+	 */
 	private static void loadMenu() {
 		System.out.println("Please select an option. Simply enter the number to choose an action");
 		System.out.println("1 New Vehicle Entering - Allocate Parking Space");

@@ -1,6 +1,18 @@
 package com.parkit.parkingsystem.constants;
 
+/**
+ * Parking Type (CAR, BIKE)
+ * 
+ * @author trimok
+ *
+ */
 public enum ParkingType {
-    CAR,
-    BIKE
+	/**
+	 * CAR
+	 */
+	CAR,
+	/**
+	 * BIKE
+	 */
+	BIKE
 }

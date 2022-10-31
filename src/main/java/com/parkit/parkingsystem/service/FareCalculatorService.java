@@ -11,16 +11,28 @@ import com.parkit.parkingsystem.constants.MathUtil;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.Ticket;
 
+/**
+ * Fare calculator
+ * 
+ * @author trimok
+ *
+ */
 public class FareCalculatorService {
 
+	/**
+	 * Calculate the fare from a Ticket object : Update the attribute price of the ticket
+	 * 
+	 * @param ticket
+	 *            : the ticket from which the fare has to be calculated
+	 */
 	public void calculateFare(Ticket ticket) {
 		LocalDateTime inTime = ticket.getInTime();
 		LocalDateTime outTime = ticket.getOutTime();
 
-		// TM 31/10/22 Difference in nanosecondes
+		// TM 31/10/22 Difference in microseconds
 		double nanoDifferenceTime = ChronoUnit.MICROS.between(inTime, outTime);
 
-		// TM 26/10/22 add a second to outTime, in case inTime = outTime in tests
+		// Tests correct inTime and outTime attributes
 		if ((inTime == null) || nanoDifferenceTime < 0) {
 			throw new IllegalArgumentException("Times provided are incorrect: InTime = " + inTime.toString()
 					+ ", outTime = " + outTime.toString());

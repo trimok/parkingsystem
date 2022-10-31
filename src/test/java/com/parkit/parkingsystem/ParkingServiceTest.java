@@ -29,23 +29,57 @@ import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * Unitary tests for Parking Service
+ * 
+ * @author trimok
+ *
+ */
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
+	/**
+	 * Tne parking service
+	 */
 	private static ParkingService parkingService;
 
+	/**
+	 * The calculator service
+	 */
 	@Mock
 	private static FareCalculatorService fareCalculatorService;
+	/**
+	 * The interactive shell
+	 */
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
+	/**
+	 * The parking spot DAO
+	 */
 	@Mock
 	private static ParkingSpotDAO parkingSpotDAO;
+	/**
+	 * The ticket DAO
+	 */
 	@Mock
 	private static TicketDAO ticketDAO;
 
+	/**
+	 * The ticket
+	 */
 	private Ticket ticket;
+	/**
+	 * The parking spot
+	 */
 	private ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+	/**
+	 * Test vehicle number
+	 */
 	private final static String VEHICLE_NUMBER = "ABCDEF";
+
+	/**
+	 * Init method before each test
+	 */
 
 	@BeforeEach
 	public void setUpPerTest() {

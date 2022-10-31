@@ -25,28 +25,52 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 
+/**
+ * Unitary Tests for FareCalculator Service
+ * 
+ * @author trimok
+ *
+ */
 public class FareCalculatorServiceTest {
 
+	/**
+	 * The calculator service
+	 */
 	private static FareCalculatorService fareCalculatorService;
+	/**
+	 * The ticket
+	 */
 	private Ticket ticket;
 
+	/**
+	 * Init method before all tests
+	 */
 	@BeforeAll
 	public static void setUp() {
 		fareCalculatorService = new FareCalculatorService();
 	}
+
+	/**
+	 * Init method before each test
+	 */
 
 	@BeforeEach
 	public void setUpPerTest() {
 		ticket = new Ticket();
 	}
 
+	// TM 25/10/22 Refactoring : Utilitary method to simplify the test code
 	/**
+	 * 
 	 * Refactoring : utilitary method for calculating fare of a ticket, from parkingDuration and parkingType
 	 * 
 	 * @param parkingDurationInMinutes
+	 *            : the parking duration in minutes
 	 * @param parkingType
+	 *            : the parking type
+	 * @param clientType
+	 *            : the client type
 	 */
-	// TM 25/10/22 Refactoring : Utilitary method to simplify the test code
 	public void calculateFareForClientTypeParkingTypeParkingDuration(Long parkingDurationInMinutes,
 			ParkingType parkingType, ClientType clientType) {
 		ParkingSpot parkingSpot = new ParkingSpot(1, parkingType, false);
@@ -63,14 +87,22 @@ public class FareCalculatorServiceTest {
 	}
 
 	/**
-	 * Generic Method to calculate correct prices for different vehicle types and parking durations
 	 * 
-	 * see fareParametersProvider
+	 * Generic Method for calculating fare
+	 * 
+	 * @see fareParametersProvider
+	 * 
+	 * @param clientType
+	 *            : the client type
 	 * 
 	 * @param parkingType
+	 *            : the parking type
 	 * @param rate_per_hour
+	 *            : the rate per hour
 	 * @param parkingDurationInMinutes
+	 *            : the parking duration in mintues
 	 * @param expectedFare
+	 *            : the expected fare
 	 */
 	@DisplayName("Standard : ")
 	@ParameterizedTest(name = "Fare for client {0}, Type vehicle {1}, parking duration of {3} minutes should be equals to {4}")
@@ -88,7 +120,7 @@ public class FareCalculatorServiceTest {
 	/**
 	 * Arguments Provider for the method calculateFare
 	 * 
-	 * @return
+	 * @return : the list of arguments
 	 */
 	public static Stream<Arguments> fareParametersProvider() {
 		// GIVEN
@@ -136,30 +168,32 @@ public class FareCalculatorServiceTest {
 	/**
 	 * Generic Method to check exception throws for unknown vehicle type or negative parking duration
 	 * 
-	 * see fareExceptionParametersProvider
+	 * @see fareExceptionParametersProvider
 	 * 
 	 * @param parkingType
-	 * @param rate_per_hour
+	 *            : the parking type
 	 * @param parkingDurationInMinutes
-	 * @param expectedFare
+	 *            : the parking duration in minutes
+	 * @param expectedExceptionClass
+	 *            : the expected exception class
 	 */
 	@DisplayName("Exception : ")
 	@ParameterizedTest(name = "Fare calculus : an exception ot type {2} should be thrown for vehicle Type = {0} and parking duration of {1} ")
 	@MethodSource("fareExceptionParametersProvider")
 	public void calculateFare_ForParkingTypeParkingDuration_shouldThrowsAssertion(ParkingType parkingType,
-			long parkingDurationInMinutes, Class<Exception> exceptionClass) {
+			long parkingDurationInMinutes, Class<Exception> expectedExceptionClass) {
 		// WHEN
 		Executable action = () -> calculateFareForClientTypeParkingTypeParkingDuration(parkingDurationInMinutes,
 				parkingType, ClientType.OLD);
 
 		// THEN
-		assertThrows(exceptionClass, action);
+		assertThrows(expectedExceptionClass, action);
 	}
 
 	/**
 	 * Arguments Provider for the method calculateFareException
 	 * 
-	 * @return
+	 * @return : the list of the arguments
 	 */
 	public static Stream<Arguments> fareExceptionParametersProvider() {
 		// GIVEN

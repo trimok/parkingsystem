@@ -12,19 +12,53 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * Parking Service
+ * 
+ * @author trimok
+ *
+ */
 public class ParkingService {
 
+	/**
+	 * The calculator service (except for mocking)
+	 */
 	private static final FareCalculatorService globalFareCalculatorService = new FareCalculatorService();
 
+	/**
+	 * The logger
+	 */
 	private static final Logger logger = LogManager.getLogger("ParkingService");
 
+	/**
+	 * The interactive shell
+	 */
 	private InputReaderUtil inputReaderUtil;
+	/**
+	 * The ParkingSpot Dao
+	 */
 	private ParkingSpotDAO parkingSpotDAO;
+	/**
+	 * The Ticket Dao
+	 */
 	private TicketDAO ticketDAO;
 	// TM 31/10/22 For testing calculatorService as a mock
+	/**
+	 * CalculatorService for mocking
+	 */
 	private FareCalculatorService fareCalculatorService;
 
 	// TM 31/10/22 standard constructor
+	/**
+	 * Standard constructor
+	 * 
+	 * @param inputReaderUtil
+	 *            : the interactive shell
+	 * @param parkingSpotDAO
+	 *            : the parkingSpot DAO
+	 * @param ticketDAO
+	 *            : the ticket DAO
+	 */
 	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO) {
 		this.inputReaderUtil = inputReaderUtil;
 		this.parkingSpotDAO = parkingSpotDAO;
@@ -33,6 +67,18 @@ public class ParkingService {
 	}
 
 	// TM 31/10/22 For testing calculatorService as a mock
+	/**
+	 * Constructor for mocking the calculator service
+	 * 
+	 * @param inputReaderUtil
+	 *            : the interactive shell
+	 * @param parkingSpotDAO
+	 *            : the parkingSpot DAO
+	 * @param ticketDAO
+	 *            : the ticket DAO
+	 * @param fareCalculatorService
+	 *            : the calculator service
+	 */
 	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO,
 			FareCalculatorService fareCalculatorService) {
 		this.inputReaderUtil = inputReaderUtil;
@@ -41,14 +87,28 @@ public class ParkingService {
 		this.fareCalculatorService = fareCalculatorService;
 	}
 
+	/**
+	 * Get the calculator service
+	 * 
+	 * @return : the calculator service
+	 */
 	public FareCalculatorService getFareCalculatorService() {
 		return fareCalculatorService;
 	}
 
+	/**
+	 * Setting the calculator service
+	 * 
+	 * @param fareCalculatorService
+	 *            : the calculator service
+	 */
 	public void setFareCalculatorService(FareCalculatorService fareCalculatorService) {
 		this.fareCalculatorService = fareCalculatorService;
 	}
 
+	/**
+	 * Incoming process
+	 */
 	public void processIncomingVehicle() {
 		try {
 
@@ -78,6 +138,7 @@ public class ParkingService {
 				ticket.setOutTime(null);
 				ticket.setOldClient(old_client);
 				ticketDAO.saveTicket(ticket);
+
 				System.out.println("Generated Ticket and saved in DB");
 				System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
 				System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
@@ -87,11 +148,24 @@ public class ParkingService {
 		}
 	}
 
+	/**
+	 * Getting the vehicle number
+	 * 
+	 * @return : the vehicle number
+	 * @throws Exception
+	 *             : bad user input
+	 * 
+	 */
 	private String getVehicleRegNumber() throws Exception {
 		System.out.println("Please type the vehicle registration number and press enter key");
 		return inputReaderUtil.readVehicleRegistrationNumber();
 	}
 
+	/**
+	 * Getting the next available parking number
+	 * 
+	 * @return : the next available parking number
+	 */
 	public ParkingSpot getNextParkingNumberIfAvailable() {
 		int parkingNumber = 0;
 		ParkingSpot parkingSpot = null;
@@ -111,6 +185,11 @@ public class ParkingService {
 		return parkingSpot;
 	}
 
+	/**
+	 * Getting the vehicle type
+	 * 
+	 * @return : the vehicle type
+	 */
 	private ParkingType getVehicleType() {
 		System.out.println("Please select vehicle type from menu");
 		System.out.println("1 CAR");
@@ -130,6 +209,9 @@ public class ParkingService {
 		}
 	}
 
+	/**
+	 * Exiting process
+	 */
 	public void processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
@@ -142,6 +224,7 @@ public class ParkingService {
 				ParkingSpot parkingSpot = ticket.getParkingSpot();
 				parkingSpot.setAvailable(true);
 				parkingSpotDAO.updateParking(parkingSpot);
+
 				System.out.println("Please pay the parking fare:" + ticket.getPrice());
 				System.out.println(
 						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
@@ -157,10 +240,8 @@ public class ParkingService {
 	 * Method to get a ticket and its associated parkingSpot from a vehicleNumber
 	 * 
 	 * @param vehicleRegNumber
-	 * @param modeInteractive
-	 *            : true for tests (the value of vehicleRegNumber is then given by the inputReaderUtil object), false
-	 *            for direct access
-	 * @return
+	 *            : the vehicle number
+	 * @return : the last ticket with this vehicle number
 	 */
 	// TM 26/10/22 Method to get the first ticket (with the associated ParkingSpot) from the vehicle number
 	public Ticket getLastTicketAndParkingSpotFromVehicleNumber(String vehicleRegNumber) {

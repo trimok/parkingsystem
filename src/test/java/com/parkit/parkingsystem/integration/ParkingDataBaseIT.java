@@ -26,19 +26,49 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 
+/**
+ * Integration Tests
+ * 
+ * @author trimok
+ *
+ */
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
 
+	/**
+	 * Database de test
+	 */
 	private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
+	/**
+	 * Parking spot DAO
+	 */
 	private static ParkingSpotDAO parkingSpotDAO;
+	/**
+	 * Ticket DAO
+	 */
 	private static TicketDAO ticketDAO;
+	/**
+	 * Utility class
+	 */
 	private static DataBasePrepareService dataBasePrepareService;
 
+	/**
+	 * Test vehicle number
+	 */
 	private static final String VEHICLE_NUMBER = "ABCDEF";
 
+	/**
+	 * The mocking interactive shell
+	 */
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
 
+	/**
+	 * Init method for all tests
+	 * 
+	 * @throws Exception
+	 *             : exception
+	 */
 	@BeforeAll
 	public static void setUp() throws Exception {
 		parkingSpotDAO = new ParkingSpotDAO();
@@ -48,6 +78,12 @@ public class ParkingDataBaseIT {
 		dataBasePrepareService = new DataBasePrepareService();
 	}
 
+	/**
+	 * Init method for each test
+	 * 
+	 * @throws Exception
+	 *             : exception
+	 */
 	@BeforeEach
 	public void setUpPerTest() throws Exception {
 		// TM 26/10/22 1 = type CAR, 2 = type BIKE
@@ -56,6 +92,9 @@ public class ParkingDataBaseIT {
 		dataBasePrepareService.clearDataBaseEntries();
 	}
 
+	/**
+	 * Method launched after all tests
+	 */
 	@AfterAll
 	public static void tearDown() {
 
@@ -65,6 +104,7 @@ public class ParkingDataBaseIT {
 	 * Test for the incoming process
 	 * 
 	 * @throws Exception
+	 *             : exception
 	 */
 	@Test
 	@DisplayName("IT :Incoming process, should write ticket in the database, with inTime filled")
@@ -98,6 +138,7 @@ public class ParkingDataBaseIT {
 	 * Test for the simple incoming + exiting process
 	 * 
 	 * @throws Exception
+	 *             : exception
 	 */
 	@Test
 	@DisplayName("IT : Simple incoming + exiting process, should write/update ticket in the database, with inTime/outTime filled")
@@ -128,6 +169,7 @@ public class ParkingDataBaseIT {
 	 * Test for the multiple incoming + exiting process
 	 * 
 	 * @throws Exception
+	 *             : exception
 	 */
 	@Test
 	@DisplayName("IT : Multiple incoming + exiting process, should write/update ticket in the database, with inTime/outTime/oldClient filled")
