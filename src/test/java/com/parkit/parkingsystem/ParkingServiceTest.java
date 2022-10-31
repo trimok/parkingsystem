@@ -60,6 +60,7 @@ public class ParkingServiceTest {
 			LocalDateTime inTime = outTime.minusHours(1);
 			ticket.setInTime(inTime);
 			ticket.setOutTime(outTime);
+			ticket.setOldClient(false);
 			ticket.setParkingSpot(parkingSpot);
 
 			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
@@ -75,8 +76,8 @@ public class ParkingServiceTest {
 	 * Test for the exiting process for vehicle
 	 */
 	@Test
-	@DisplayName("Unitary Test for the incoming process for vehicle")
-	public void processIncomingVehicleTest() {
+	@DisplayName("Incoming process should call TicketDao and ParkingSpotDao")
+	public void parking_whenIncomingProcess_shouldCallDaosAndFareCalculatorService() {
 
 		// GIVEN
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
@@ -94,10 +95,10 @@ public class ParkingServiceTest {
 	 * Test for the simple incoming + exiting process for vehicle
 	 */
 	@Test
-	@DisplayName("Test New Client = simple incoming + exiting")
-	public void processSimpleIncomingPlusExitingVehicleTest() {
+	@DisplayName("Simple incoming + exiting process should call Daos, CalculatorService")
+	public void parking_whenSimpleIncomingPlusExitingProcess_shouldCallDaosAndCalculatorService_OldClientToFalse() {
 
-		// Capture des modèles de calcul
+		// Ticket Capture
 		final ArgumentCaptor<Ticket> ticketCaptor = ArgumentCaptor.forClass(Ticket.class);
 
 		// GIVEN

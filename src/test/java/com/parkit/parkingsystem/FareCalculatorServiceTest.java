@@ -46,9 +46,9 @@ public class FareCalculatorServiceTest {
 	 * @param parkingDurationInMinutes
 	 * @param parkingType
 	 */
-	// TM 25/10/22 Refactoring : Utilitary method to simplify the code
-	public void calculateTicketFromParkingDurationAndType(Long parkingDurationInMinutes, ParkingType parkingType,
-			ClientType clientType) {
+	// TM 25/10/22 Refactoring : Utilitary method to simplify the test code
+	public void calculateFareForClientTypeParkingTypeParkingDuration(Long parkingDurationInMinutes,
+			ParkingType parkingType, ClientType clientType) {
 		ParkingSpot parkingSpot = new ParkingSpot(1, parkingType, false);
 
 		LocalDateTime outTime = LocalDateTime.now();
@@ -72,14 +72,14 @@ public class FareCalculatorServiceTest {
 	 * @param parkingDurationInMinutes
 	 * @param expectedFare
 	 */
-	@DisplayName("Fare calculus test : ")
+	@DisplayName("Standard : ")
 	@ParameterizedTest(name = "Fare for client {0}, Type vehicle {1}, parking duration of {3} minutes should be equals to {4}")
 	@MethodSource("fareParametersProvider")
-	public void calculateFare(ClientType clientType, ParkingType parkingType, double rate_per_hour,
-			long parkingDurationInMinutes, double expectedFare) {
+	public void calculateFare_ForClientTypeParkingTypeParkingDuration_shouldBeEqualsTo(ClientType clientType,
+			ParkingType parkingType, double rate_per_hour, long parkingDurationInMinutes, double expectedFare) {
 
 		// WHEN
-		calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType, clientType);
+		calculateFareForClientTypeParkingTypeParkingDuration(parkingDurationInMinutes, parkingType, clientType);
 
 		// THEN
 		assertThat(ticket.getPrice()).isCloseTo(expectedFare, Assertions.offset(PRECISION));
@@ -95,13 +95,15 @@ public class FareCalculatorServiceTest {
 		return Stream.of(
 				// VEHICLE TYPE, RATE_PER_HOUR, PARKING DURATION IN MINUTES, EXPECTED FARE, OLD_CLIENT
 
-				// NEW CLIENT
+				// NEW CLIENT (CAR)
 				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 60,
 						MathUtil.round((60 / SIXTY) * Fare.CAR_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 45,
 						MathUtil.round((45 / SIXTY) * Fare.CAR_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 24 * 60,
 						MathUtil.round((24 * 60 / SIXTY) * Fare.CAR_RATE_PER_HOUR)),
+
+				// NEW CLIENT (BIKE)
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 60,
 						MathUtil.round((60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR)),
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 45,
@@ -109,13 +111,15 @@ public class FareCalculatorServiceTest {
 				Arguments.arguments(ClientType.NEW, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 24 * 60,
 						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR)),
 
-				// OLD CLIENT (5 % reduction)
+				// OLD CLIENT (5 % reduction) CAR
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 60,
 						MathUtil.round((60.0 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 45,
 						MathUtil.round((45 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 24 * 60,
 						MathUtil.round((24 * 60 / SIXTY) * Fare.CAR_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
+
+				// OLD CLIENT (5 % reduction) BIKE
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 60,
 						MathUtil.round((60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 45,
@@ -139,14 +143,14 @@ public class FareCalculatorServiceTest {
 	 * @param parkingDurationInMinutes
 	 * @param expectedFare
 	 */
-	@DisplayName("Fare calculus exception test : ")
-	@ParameterizedTest(name = "An exception ot type {2} should be thrown for vehicle Type = {0} and parking duration of {1} ")
+	@DisplayName("Exception : ")
+	@ParameterizedTest(name = "Fare calculus : an exception ot type {2} should be thrown for vehicle Type = {0} and parking duration of {1} ")
 	@MethodSource("fareExceptionParametersProvider")
-	public void calculateFareException(ParkingType parkingType, long parkingDurationInMinutes,
-			Class<Exception> exceptionClass) {
+	public void calculateFare_ForParkingTypeParkingDuration_shouldThrowsAssertion(ParkingType parkingType,
+			long parkingDurationInMinutes, Class<Exception> exceptionClass) {
 		// WHEN
-		Executable action = () -> calculateTicketFromParkingDurationAndType(parkingDurationInMinutes, parkingType,
-				ClientType.OLD);
+		Executable action = () -> calculateFareForClientTypeParkingTypeParkingDuration(parkingDurationInMinutes,
+				parkingType, ClientType.OLD);
 
 		// THEN
 		assertThrows(exceptionClass, action);
@@ -161,7 +165,11 @@ public class FareCalculatorServiceTest {
 		// GIVEN
 		return Stream.of(
 				// VEHICLE TYPE, PARKING DURATION IN MINUTES, EXCEPTION CLASS
+
+				// ParkingType is null
 				Arguments.arguments(null, 60, NullPointerException.class),
+
+				// Parking duration is < 0
 				Arguments.arguments(ParkingType.CAR, -60, IllegalArgumentException.class),
 				Arguments.arguments(ParkingType.BIKE, -60, IllegalArgumentException.class));
 	}

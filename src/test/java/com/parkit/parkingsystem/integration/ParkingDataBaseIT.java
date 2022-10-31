@@ -62,13 +62,13 @@ public class ParkingDataBaseIT {
 	}
 
 	/**
-	 * Test for the process parking
+	 * Test for the incoming process
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	@DisplayName("Integration test for incoming parking process")
-	public void testParkingACar() throws Exception {
+	@DisplayName("IT :Incoming process, should write ticket in the database, with inTime filled")
+	public void parking_whenIncomingProcess_shouldWriteCorrectTicketInDatabase() throws Exception {
 		// GIVEN
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
@@ -100,8 +100,8 @@ public class ParkingDataBaseIT {
 	 * @throws Exception
 	 */
 	@Test
-	@DisplayName("Integration test for the simple incoming + exiting parking process")
-	public void testSimpleIncomingExitingParkingProcess() throws Exception {
+	@DisplayName("IT : Simple incoming + exiting process, should write/update ticket in the database, with inTime/outTime filled")
+	public void parking_whenSimpleIncomingPlusExitingProcess_shouldWriteCorrectTicketInDatabase() throws Exception {
 		// WHEN
 		// Simulation of simple incoming + exiting process
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -130,8 +130,9 @@ public class ParkingDataBaseIT {
 	 * @throws Exception
 	 */
 	@Test
-	@DisplayName("Integration test for the multiple incoming + parking exiting process")
-	public void testMultipleIncomingExitingParkingProcess() throws Exception {
+	@DisplayName("IT : Multiple incoming + exiting process, should write/update ticket in the database, with inTime/outTime/oldClient filled")
+	public void parking_whenMultipleIncomingPlusExitingProcess_shouldWriteCorrectTicketInDatabase() throws Exception {
+
 		// WHEN
 		// Simulation of multiple incoming + exiting process
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
