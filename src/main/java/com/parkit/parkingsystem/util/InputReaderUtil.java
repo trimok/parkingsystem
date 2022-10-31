@@ -29,8 +29,16 @@ public class InputReaderUtil {
 	 */
 	public int readSelection() {
 		try {
-			int input = Integer.parseInt(scan.nextLine());
-			return input;
+			String inputLine = scan.nextLine();
+			// TM 31/10/22 User must choose a valid selection number
+			if (inputLine != null && !inputLine.isEmpty()) {
+				int input = Integer.parseInt(inputLine);
+				return input;
+			} else {
+				logger.error("Error while reading user input from Shell");
+				System.out.println("Error reading input. Please enter valid number for proceeding further");
+				return -1;
+			}
 		} catch (Exception e) {
 			logger.error("Error while reading user input from Shell", e);
 			System.out.println("Error reading input. Please enter valid number for proceeding further");

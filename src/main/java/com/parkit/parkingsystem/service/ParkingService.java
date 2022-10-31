@@ -222,19 +222,23 @@ public class ParkingService {
 			String vehicleRegNumber = getVehicleRegNumber();
 			// TM 28/10/22 Search for the last ticket and its associated ParkingSpot for the vehicle in the database
 			Ticket ticket = getLastTicketAndParkingSpotFromVehicleNumber(vehicleRegNumber);
-			LocalDateTime outTime = LocalDateTime.now();
-			ticket.setOutTime(outTime);
-			fareCalculatorService.calculateFare(ticket);
-			if (ticketDAO.updateTicket(ticket)) {
-				ParkingSpot parkingSpot = ticket.getParkingSpot();
-				parkingSpot.setAvailable(true);
-				parkingSpotDAO.updateParking(parkingSpot);
+			if (ticket != null) {
+				LocalDateTime outTime = LocalDateTime.now();
+				ticket.setOutTime(outTime);
+				fareCalculatorService.calculateFare(ticket);
+				if (ticketDAO.updateTicket(ticket)) {
+					ParkingSpot parkingSpot = ticket.getParkingSpot();
+					parkingSpot.setAvailable(true);
+					parkingSpotDAO.updateParking(parkingSpot);
 
-				System.out.println("Please pay the parking fare:" + ticket.getPrice());
-				System.out.println(
-						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+					System.out.println("Please pay the parking fare:" + ticket.getPrice());
+					System.out.println(
+							"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+				} else {
+					System.out.println("Unable to update ticket information. Error occurred");
+				}
 			} else {
-				System.out.println("Unable to update ticket information. Error occurred");
+				System.out.println("Incorrect vehicle number!");
 			}
 		} catch (Exception e) {
 			logger.error("Unable to process exiting vehicle", e);
