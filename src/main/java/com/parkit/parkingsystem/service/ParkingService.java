@@ -14,25 +14,52 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 
 public class ParkingService {
 
-	private static final Logger logger = LogManager.getLogger("ParkingService");
+	private static final FareCalculatorService globalFareCalculatorService = new FareCalculatorService();
 
-	private static FareCalculatorService fareCalculatorService = new FareCalculatorService();
+	private static final Logger logger = LogManager.getLogger("ParkingService");
 
 	private InputReaderUtil inputReaderUtil;
 	private ParkingSpotDAO parkingSpotDAO;
 	private TicketDAO ticketDAO;
+	// TM 31/10/22 For testing calculatorService as a mock
+	private FareCalculatorService fareCalculatorService;
 
+	// TM 31/10/22 standard constructor
 	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO) {
 		this.inputReaderUtil = inputReaderUtil;
 		this.parkingSpotDAO = parkingSpotDAO;
 		this.ticketDAO = ticketDAO;
+		this.fareCalculatorService = globalFareCalculatorService;
+	}
+
+	// TM 31/10/22 For testing calculatorService as a mock
+	public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO,
+			FareCalculatorService fareCalculatorService) {
+		this.inputReaderUtil = inputReaderUtil;
+		this.parkingSpotDAO = parkingSpotDAO;
+		this.ticketDAO = ticketDAO;
+		this.fareCalculatorService = fareCalculatorService;
+	}
+
+	public FareCalculatorService getFareCalculatorService() {
+		return fareCalculatorService;
+	}
+
+	public void setFareCalculatorService(FareCalculatorService fareCalculatorService) {
+		this.fareCalculatorService = fareCalculatorService;
 	}
 
 	public void processIncomingVehicle() {
 		try {
+
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
 			if (parkingSpot != null && parkingSpot.getId() > 0) {
 				String vehicleRegNumber = getVehicleRegNumber();
+				// TM 28/10/22 Look if it exists already a ticket
+				boolean old_client = (getLastTicketAndParkingSpotFromVehicleNumber(vehicleRegNumber) != null)
+						? true
+						: false;
+
 				parkingSpot.setAvailable(false);
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking
 															// space and mark
@@ -49,6 +76,7 @@ public class ParkingService {
 				ticket.setPrice(0);
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
+				ticket.setOldClient(old_client);
 				ticketDAO.saveTicket(ticket);
 				System.out.println("Generated Ticket and saved in DB");
 				System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
@@ -105,7 +133,8 @@ public class ParkingService {
 	public void processExitingVehicle() {
 		try {
 			String vehicleRegNumber = getVehicleRegNumber();
-			Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+			// TM 28/10/22 Search for the last ticket and its associated ParkingSpot for the vehicle in the database
+			Ticket ticket = getLastTicketAndParkingSpotFromVehicleNumber(vehicleRegNumber);
 			LocalDateTime outTime = LocalDateTime.now();
 			ticket.setOutTime(outTime);
 			fareCalculatorService.calculateFare(ticket);
@@ -114,7 +143,8 @@ public class ParkingService {
 				parkingSpot.setAvailable(true);
 				parkingSpotDAO.updateParking(parkingSpot);
 				System.out.println("Please pay the parking fare:" + ticket.getPrice());
-				System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+				System.out.println(
+						"Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
 			} else {
 				System.out.println("Unable to update ticket information. Error occurred");
 			}
@@ -128,25 +158,23 @@ public class ParkingService {
 	 * 
 	 * @param vehicleRegNumber
 	 * @param modeInteractive
-	 *            : true for tests, false for direct access
+	 *            : true for tests (the value of vehicleRegNumber is then given by the inputReaderUtil object), false
+	 *            for direct access
 	 * @return
 	 */
 	// TM 26/10/22 Method to get the first ticket (with the associated ParkingSpot) from the vehicle number
-	public Ticket getFirstTicketFromVehicleNumber(String vehicleRegNumber, boolean modeInteractive) {
+	public Ticket getLastTicketAndParkingSpotFromVehicleNumber(String vehicleRegNumber) {
 		Ticket ticket = null;
 		try {
-			if (modeInteractive) {
-				vehicleRegNumber = getVehicleRegNumber();
-			}
-			// Get the (first) ticket from the database
-			ticket = ticketDAO.getTicket(vehicleRegNumber);
+			// TM 28/10/22 Get the most recent ticket corresponding to the vehicle
+			ticket = ticketDAO.getLastTicket(vehicleRegNumber);
 
 			// Get the parkingSpot from the database
 			if (ticket != null) {
 				ParkingSpot parkingSpotSkeleton = ticket.getParkingSpot();
 				if (parkingSpotSkeleton != null) {
 					int parkingNumber = parkingSpotSkeleton.getId();
-					ParkingSpot parkingSpot = parkingSpotDAO.getParkingType(parkingNumber);
+					ParkingSpot parkingSpot = parkingSpotDAO.getParkingSpot(parkingNumber);
 
 					// Make the link with the ticket
 					ticket.setParkingSpot(parkingSpot);

@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
-import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 
@@ -32,6 +31,7 @@ public class TicketDAO {
 			ps.setDouble(3, ticket.getPrice());
 			ps.setTimestamp(4, Timestamp.valueOf(ticket.getInTime()));
 			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : Timestamp.valueOf(ticket.getOutTime()));
+			ps.setBoolean(6, ticket.isOldClient());
 			return ps.execute();
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
@@ -41,18 +41,19 @@ public class TicketDAO {
 		return false;
 	}
 
-	public Ticket getTicket(String vehicleRegNumber) {
+	public Ticket getLastTicket(String vehicleRegNumber) {
 		Connection con = null;
 		Ticket ticket = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
+			PreparedStatement ps = con.prepareStatement(DBConstants.GET_LAST_TICKET);
 			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 			ps.setString(1, vehicleRegNumber);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				ticket = new Ticket();
-				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
+				// TM 31/10/22 Minimal (Skeleton) Parking Spot, only the key (parking number) is correct
+				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1));
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setId(rs.getInt(2));
 				ticket.setVehicleRegNumber(vehicleRegNumber);
@@ -66,6 +67,7 @@ public class TicketDAO {
 				if (outTimestamp != null) {
 					ticket.setOutTime(outTimestamp.toLocalDateTime());
 				}
+				ticket.setOldClient(rs.getBoolean(6));
 			}
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);

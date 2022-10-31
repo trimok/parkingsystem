@@ -124,7 +124,9 @@ public class FareCalculatorServiceTest {
 						MathUtil.round((24 * 60 / SIXTY) * Fare.BIKE_RATE_PER_HOUR * Fare.OLD_CLIENT_RATE_FACTOR)),
 
 				// LESS THAN 30 minutes = 0 fare
-				Arguments.arguments(ClientType.OLD, ParkingType.BIKE, Fare.BIKE_RATE_PER_HOUR, 29, 0.0));
+				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 29, 0.0),
+				Arguments.arguments(ClientType.NEW, ParkingType.CAR, Fare.CAR_RATE_PER_HOUR, 30,
+						MathUtil.round((30 / SIXTY) * Fare.CAR_RATE_PER_HOUR)));
 	}
 
 	/**

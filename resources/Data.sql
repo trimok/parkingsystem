@@ -1,4 +1,6 @@
 /* Setting up PROD DB */
+drop database prod;
+drop database test;
 create database prod;
 use prod;
 
@@ -13,8 +15,9 @@ create table ticket(
  PARKING_NUMBER int NOT NULL,
  VEHICLE_REG_NUMBER varchar(10) NOT NULL,
  PRICE double,
- IN_TIME DATETIME NOT NULL,
- OUT_TIME DATETIME,
+ IN_TIME DATETIME(6) NOT NULL,
+ OUT_TIME DATETIME(6),
+ OLD_CLIENT bool NOT NULL,
  FOREIGN KEY (PARKING_NUMBER)
  REFERENCES parking(PARKING_NUMBER));
 
@@ -40,8 +43,9 @@ create table ticket(
  PARKING_NUMBER int NOT NULL,
  VEHICLE_REG_NUMBER varchar(10) NOT NULL,
  PRICE double,
- IN_TIME DATETIME NOT NULL,
- OUT_TIME DATETIME,
+ IN_TIME DATETIME(6) NOT NULL,
+ OUT_TIME DATETIME(6),
+ OLD_CLIENT bool NOT NULL,
  FOREIGN KEY (PARKING_NUMBER)
  REFERENCES parking(PARKING_NUMBER));
 

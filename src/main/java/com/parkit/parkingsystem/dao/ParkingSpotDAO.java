@@ -64,7 +64,7 @@ public class ParkingSpotDAO {
 	 * @return
 	 */
 	// TM 26/10/22
-	public ParkingSpot getParkingType(int parkingNumber) {
+	public ParkingSpot getParkingSpot(int parkingNumber) {
 		Connection con = null;
 		ParkingSpot parkingSpot = null;
 		try {
