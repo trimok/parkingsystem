@@ -102,7 +102,7 @@
 				<version>${spotbugs-maven-plugin-version}</version>
 				<configuration>
 					<failOnError>true</failOnError>
-					<threshold>Default</threshold>
+					<threshold>Low</threshold>
 					<effort>Max</effort>
 				</configuration>
 			</plugin>

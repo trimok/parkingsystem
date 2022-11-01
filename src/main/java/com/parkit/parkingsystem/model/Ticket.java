@@ -87,7 +87,11 @@ public class Ticket {
 	 * @return : the parking spot
 	 */
 	public ParkingSpot getParkingSpot() {
-		return new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
+		if (parkingSpot != null) {
+			return new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -97,8 +101,12 @@ public class Ticket {
 	 *            : the parking spot
 	 */
 	public void setParkingSpot(ParkingSpot parkingSpot) {
-		this.parkingSpot = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
-				parkingSpot.isAvailable());
+		if (parkingSpot != null) {
+			this.parkingSpot = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
+					parkingSpot.isAvailable());
+		} else {
+			this.parkingSpot = null;
+		}
 	}
 
 	/**
