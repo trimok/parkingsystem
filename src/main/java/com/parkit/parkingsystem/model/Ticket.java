@@ -87,7 +87,7 @@ public class Ticket {
 	 * @return : the parking spot
 	 */
 	public ParkingSpot getParkingSpot() {
-		return parkingSpot;
+		return new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(), parkingSpot.isAvailable());
 	}
 
 	/**
@@ -97,7 +97,8 @@ public class Ticket {
 	 *            : the parking spot
 	 */
 	public void setParkingSpot(ParkingSpot parkingSpot) {
-		this.parkingSpot = parkingSpot;
+		this.parkingSpot = new ParkingSpot(parkingSpot.getId(), parkingSpot.getParkingType(),
+				parkingSpot.isAvailable());
 	}
 
 	/**

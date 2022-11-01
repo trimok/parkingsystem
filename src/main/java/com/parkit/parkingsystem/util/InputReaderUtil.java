@@ -16,7 +16,7 @@ public class InputReaderUtil {
 	/**
 	 * The scanner (console object)
 	 */
-	private static Scanner scan = new Scanner(System.in);
+	private static Scanner scan = new Scanner(System.in, "UTF-8");
 	/**
 	 * The logger
 	 */

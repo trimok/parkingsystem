@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem.constants;
+package com.parkit.parkingsystem.util;
 
 /**
  * Math constants

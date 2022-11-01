@@ -38,21 +38,29 @@ public class ParkingSpotDAO {
 	 */
 	public int getNextAvailableSlot(ParkingType parkingType) {
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		int result = -1;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
+			ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
 			ps.setString(1, parkingType.toString());
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				result = rs.getInt(1);;
 			}
-			dataBaseConfig.closeResultSet(rs);
-			dataBaseConfig.closePreparedStatement(ps);
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
+			if (rs != null) {
+				dataBaseConfig.closeResultSet(rs);
+			}
+			if (ps != null) {
+				dataBaseConfig.closePreparedStatement(ps);
+			}
+			if (con != null) {
+				dataBaseConfig.closeConnection(con);
+			}
 		}
 		return result;
 	}
@@ -67,19 +75,24 @@ public class ParkingSpotDAO {
 	public boolean updateParking(ParkingSpot parkingSpot) {
 		// update the availability fo that parking slot
 		Connection con = null;
+		PreparedStatement ps = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
+			ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
 			ps.setBoolean(1, parkingSpot.isAvailable());
 			ps.setInt(2, parkingSpot.getId());
 			int updateRowCount = ps.executeUpdate();
-			dataBaseConfig.closePreparedStatement(ps);
 			return (updateRowCount == 1);
 		} catch (Exception ex) {
 			logger.error("Error updating parking info", ex);
 			return false;
 		} finally {
-			dataBaseConfig.closeConnection(con);
+			if (ps != null) {
+				dataBaseConfig.closePreparedStatement(ps);
+			}
+			if (con != null) {
+				dataBaseConfig.closeConnection(con);
+			}
 		}
 	}
 
@@ -93,12 +106,14 @@ public class ParkingSpotDAO {
 	// TM 26/10/22
 	public ParkingSpot getParkingSpot(int parkingNumber) {
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		ParkingSpot parkingSpot = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			PreparedStatement ps = con.prepareStatement(DBConstants.GET_PARKING_SPOT);
+			ps = con.prepareStatement(DBConstants.GET_PARKING_SPOT);
 			ps.setInt(1, parkingNumber);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				boolean available = rs.getBoolean(1);
 				ParkingType parkingType = ParkingType.valueOf(rs.getString(2));
@@ -109,7 +124,15 @@ public class ParkingSpotDAO {
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
 		} finally {
-			dataBaseConfig.closeConnection(con);
+			if (rs != null) {
+				dataBaseConfig.closeResultSet(rs);
+			}
+			if (ps != null) {
+				dataBaseConfig.closePreparedStatement(ps);
+			}
+			if (con != null) {
+				dataBaseConfig.closeConnection(con);
+			}
 		}
 		return parkingSpot;
 	}

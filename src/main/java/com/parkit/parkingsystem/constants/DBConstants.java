@@ -38,4 +38,40 @@ public class DBConstants {
 	 * SQL Query for getting the last ticket
 	 */
 	public static final String GET_LAST_TICKET = "select t.PARKING_NUMBER, t.ID, t.PRICE, t.IN_TIME, t.OUT_TIME, t.OLD_CLIENT, p.TYPE from ticket t,parking p where p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=? order by t.IN_TIME DESC  limit 1";
+
+	/**
+	 * DRIVER_CLASS
+	 */
+	// private static final String URL = "jdbc:mysql://localhost:3306/prod";
+	public static final String DRIVER_CLASS = "DRIVER_CLASS";
+	/**
+	 * URL
+	 */
+	// private static final String URL = "jdbc:mysql://localhost:3306/prod";
+	public static final String URL = "URL";
+	/**
+	 * PORT
+	 */
+	public static final String PORT = "PORT";
+	/**
+	 * DATABASE
+	 */
+	public static final String DATABASE = "DATABASE";
+	/**
+	 * USERr
+	 */
+	public static final String USER = "USER";
+	/**
+	 * PASSWORD
+	 */
+	public static final String PASSWORD = "PASSWORD";
+	/**
+	 * SEPARATOR
+	 */
+	public static final String SEPARATOR = "/";
+	/**
+	 * SEPARATOR_PORT
+	 */
+	public static final String SEPARATOR_PORT = ":";
+
 }

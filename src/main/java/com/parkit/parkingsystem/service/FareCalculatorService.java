@@ -1,15 +1,15 @@
 package com.parkit.parkingsystem.service;
 
-import static com.parkit.parkingsystem.constants.MathUtil.HALF_HOUR;
-import static com.parkit.parkingsystem.constants.MathUtil.HOUR_IN_MICRO;
+import static com.parkit.parkingsystem.util.MathUtil.HALF_HOUR;
+import static com.parkit.parkingsystem.util.MathUtil.HOUR_IN_MICRO;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import com.parkit.parkingsystem.constants.Fare;
-import com.parkit.parkingsystem.constants.MathUtil;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.util.MathUtil;
 
 /**
  * Fare calculator
@@ -34,8 +34,21 @@ public class FareCalculatorService {
 
 		// Tests correct inTime and outTime attributes
 		if ((inTime == null) || nanoDifferenceTime < 0) {
-			throw new IllegalArgumentException("Times provided are incorrect: InTime = " + inTime.toString()
-					+ ", outTime = " + outTime.toString());
+			// TM 31/10/22
+			// Building explicit message
+			String message;
+			if (inTime == null) {
+				message = "inTime is null";
+			} else {
+				message = "inTime = " + inTime.toString();
+			}
+			if (outTime == null) {
+				message += ", outTime is null";
+			} else {
+				message += ", outTime = " + outTime.toString();
+			}
+
+			throw new IllegalArgumentException("Times provided are incorrect: " + message);
 		}
 
 		// TM 25/10/22 Difference in hours

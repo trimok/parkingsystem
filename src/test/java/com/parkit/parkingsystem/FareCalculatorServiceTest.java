@@ -1,7 +1,7 @@
 package com.parkit.parkingsystem;
 
-import static com.parkit.parkingsystem.constants.MathUtil.PRECISION;
-import static com.parkit.parkingsystem.constants.MathUtil.SIXTY;
+import static com.parkit.parkingsystem.util.MathUtil.PRECISION;
+import static com.parkit.parkingsystem.util.MathUtil.SIXTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,11 +19,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.parkit.parkingsystem.constants.ClientType;
 import com.parkit.parkingsystem.constants.Fare;
-import com.parkit.parkingsystem.constants.MathUtil;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
+import com.parkit.parkingsystem.util.MathUtil;
 
 /**
  * Unitary Tests for FareCalculator Service

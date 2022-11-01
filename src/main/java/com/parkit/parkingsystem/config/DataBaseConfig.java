@@ -1,13 +1,25 @@
 package com.parkit.parkingsystem.config;
 
+import static com.parkit.parkingsystem.constants.DBConstants.DATABASE;
+import static com.parkit.parkingsystem.constants.DBConstants.DRIVER_CLASS;
+import static com.parkit.parkingsystem.constants.DBConstants.PASSWORD;
+import static com.parkit.parkingsystem.constants.DBConstants.PORT;
+import static com.parkit.parkingsystem.constants.DBConstants.SEPARATOR;
+import static com.parkit.parkingsystem.constants.DBConstants.SEPARATOR_PORT;
+import static com.parkit.parkingsystem.constants.DBConstants.URL;
+import static com.parkit.parkingsystem.constants.DBConstants.USER;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.parkit.parkingsystem.util.PropertiesUtil;
 
 /**
  * 
@@ -22,7 +34,12 @@ public class DataBaseConfig {
 	/**
 	 * The logger
 	 */
-	private static final Logger logger = LogManager.getLogger("DataBaseConfig");
+	protected Logger logger = LogManager.getLogger("DataBaseConfig");
+
+	/**
+	 * The properties file where to read the parameters of the driver and the database access
+	 */
+	protected String databasePropertiesFile = "database_prod.properties";
 
 	/**
 	 * Getting the connection
@@ -35,8 +52,17 @@ public class DataBaseConfig {
 	 */
 	public Connection getConnection() throws ClassNotFoundException, SQLException {
 		logger.info("Create DB connection");
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		return DriverManager.getConnection("jdbc:mysql://localhost:3306/prod", "root", "rootroot");
+
+		// TM 01/11/22 Get the parameters from the properties file
+		Properties properties = PropertiesUtil.getDatabaseProperties(this, databasePropertiesFile);
+		String driverClass = (String) properties.get(DRIVER_CLASS);
+		String urlConnection = (String) properties.get(URL) + SEPARATOR_PORT + properties.get(PORT) + SEPARATOR
+				+ properties.get(DATABASE);
+		String user = (String) properties.get(USER);
+		String password = (String) properties.get(PASSWORD);
+
+		Class.forName(driverClass);
+		return DriverManager.getConnection(urlConnection, user, password);
 	}
 
 	/**
