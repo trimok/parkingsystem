@@ -199,8 +199,9 @@ public class ParkingDataBaseIT {
 	 *             : exception
 	 */
 	@Test
-	@DisplayName("IT Exception : Simple incoming + Bad vehicle Number, should raise exception ")
-	public void parking_whenSimpleIncomingPlusExitingProcessBadVehicleNumber_shouldRaiseException() throws Exception {
+	@DisplayName("IT Exception : Simple incoming + exiting process, Bad vehicle Number in exiting, should raise exception ")
+	public void parking_whenSimpleIncomingPlusExitingProcessBadVehicleNumberInExiting_shouldRaiseException()
+			throws Exception {
 		// GIVEN
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(VEHICLE_NUMBER);
 		when(inputReaderUtil.readSelection()).thenReturn(ParkingType.CAR.ordinal() + 1);
