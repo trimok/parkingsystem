@@ -241,7 +241,11 @@ public class ParkingService {
 				}
 			} else {
 				System.out.println("Incorrect vehicle number!");
+				throw new IllegalArgumentException("Incorrect vehicle number!");
 			}
+		} catch (IllegalArgumentException e) {
+			logger.error("Incorrect Vehicle number", e);
+			throw e;
 		} catch (Exception e) {
 			logger.error("Unable to process exiting vehicle", e);
 		}

@@ -58,6 +58,7 @@ public class ParkingDataBaseIT {
 	 * Test vehicle number
 	 */
 	private static final String VEHICLE_NUMBER = "ABCDEF";
+	private static final String BAD_VEHICLE_NUMBER = "AAAAAA";
 
 	/**
 	 * The mocking interactive shell
@@ -189,6 +190,34 @@ public class ParkingDataBaseIT {
 		ParkingSpot parkingSpot = ticket.getParkingSpot();
 		assertNotNull(parkingSpot);
 		assertTrue(parkingSpot.isAvailable());
+	}
+
+	/**
+	 * Test Exception for the simple incoming + exiting process, bad vehicle number
+	 * 
+	 * @throws Exception
+	 *             : exception
+	 */
+	@Test
+	@DisplayName("IT Exception : Simple incoming + Bad vehicle Number, should raise exception ")
+	public void parking_whenSimpleIncomingPlusExitingProcessBadVehicleNumber_shouldRaiseException() throws Exception {
+		// GIVEN
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(VEHICLE_NUMBER);
+		when(inputReaderUtil.readSelection()).thenReturn(ParkingType.CAR.ordinal() + 1);
+
+		// WHEN
+		// Simulation of simple incoming + exiting process
+		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService.processIncomingVehicle();
+
+		// TM bad vehicle number in exiting process
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(BAD_VEHICLE_NUMBER);
+
+		// WHEN
+		Executable action = () -> parkingService.processExitingVehicle();
+
+		// THEN
+		assertThrows(Exception.class, action);
 	}
 
 	/**
