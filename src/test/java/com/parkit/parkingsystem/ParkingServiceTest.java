@@ -117,12 +117,16 @@ public class ParkingServiceTest {
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
 		// WHEN
-		parkingService.processIncomingVehicle();
+		try {
+			parkingService.processIncomingVehicle();
 
-		// THEN
-		verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
-		verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
-		verify(fareCalculatorService, times(0)).calculateFare(any(Ticket.class));
+			// THEN
+			verify(parkingSpotDAO, times(1)).updateParking(any(ParkingSpot.class));
+			verify(ticketDAO, times(1)).saveTicket(any(Ticket.class));
+			verify(fareCalculatorService, times(0)).calculateFare(any(Ticket.class));
+		} catch (Exception e) {
+			assert (false);
+		}
 	}
 
 	/**
@@ -143,7 +147,13 @@ public class ParkingServiceTest {
 		parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
 		// WHEN
-		parkingService.processIncomingVehicle();
+		try {
+			parkingService.processIncomingVehicle();
+
+		} catch (Exception e) {
+			assert (false);
+		}
+
 		parkingService.processExitingVehicle();
 
 		// THEN

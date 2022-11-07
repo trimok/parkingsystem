@@ -23,7 +23,7 @@ public class InteractiveShell {
 	/**
 	 * Launching the console mode
 	 */
-	public static void loadInterface() {
+	public static void loadInterface() throws Exception {
 		logger.info("App initialized!!!");
 		System.out.println("Welcome to Parking System!");
 
@@ -38,7 +38,12 @@ public class InteractiveShell {
 			int option = inputReaderUtil.readSelection();
 			switch (option) {
 				case 1 : {
-					parkingService.processIncomingVehicle();
+					try {
+						parkingService.processIncomingVehicle();
+					} catch (Exception e) {
+						throw e;
+					}
+
 					break;
 				}
 				case 2 : {

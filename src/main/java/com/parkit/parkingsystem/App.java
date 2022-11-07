@@ -23,8 +23,12 @@ public class App {
 	 * @param args
 	 *            : the line command arguments
 	 */
-	public static void main(String args[]) {
+	public static void main(String args[]) throws Exception {
 		logger.info("Initializing Parking System");
-		InteractiveShell.loadInterface();
+		try {
+			InteractiveShell.loadInterface();
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 }

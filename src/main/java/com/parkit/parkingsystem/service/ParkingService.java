@@ -109,7 +109,7 @@ public class ParkingService {
 	/**
 	 * Incoming process
 	 */
-	public void processIncomingVehicle() {
+	public void processIncomingVehicle() throws Exception {
 		try {
 
 			ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
@@ -150,6 +150,7 @@ public class ParkingService {
 			}
 		} catch (Exception e) {
 			logger.error("Unable to process incoming vehicle", e);
+			throw e;
 		}
 	}
 
@@ -184,6 +185,7 @@ public class ParkingService {
 			}
 		} catch (IllegalArgumentException ie) {
 			logger.error("Error parsing user input for type of vehicle", ie);
+			throw ie;
 		} catch (Exception e) {
 			logger.error("Error fetching next available parking slot", e);
 		}
